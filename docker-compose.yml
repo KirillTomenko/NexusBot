@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  nexusbot:
+    build: .
+    container_name: nexusbot
+    restart: unless-stopped
+
+    # Переменные окружения из .env (не попадают в образ)
+    env_file:
+      - .env
+
+    volumes:
+      # Персистентная БД — данные живут между перезапусками контейнера
+      - ./data:/app/data
+
+    # Karing SOCKS5 работает на хосте — контейнер обращается через host.docker.internal
+    # Если запускаешь на Windows/Mac — работает из коробки.
+    # На Linux добавь: extra_hosts: ["host.docker.internal:host-gateway"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
